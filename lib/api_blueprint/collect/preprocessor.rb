@@ -32,7 +32,7 @@ class ApiBlueprint::Collect::Preprocessor
       request['route']['action'].humanize + " #{prefix} #{model.singularize}"
     end
 
-    # request['route']['action'].humanize
+    request['route']['action'].humanize
   end
 
   def preprocess(info)

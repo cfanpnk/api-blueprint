@@ -72,9 +72,9 @@ class ApiBlueprint::Collect::Merge
       requests.each do |request|
         resource = (resources[preprocessor.resource_name(request)] ||= {})
         action = (resource[preprocessor.action_name(request)] ||= {
-          :requests => []
+          :requests => [], :metadata => {}
         })
-
+        action[:metadata].merge!(request['metadata'])
         action[:requests] << request
       end
 
@@ -105,7 +105,7 @@ class ApiBlueprint::Collect::Merge
       text += actions.collect do |action, info|
         text = renderer.action_header(action)
 
-        text += renderer.description_header
+        text += renderer.description_header(info[:metadata])
         text += renderer.signature(info[:path], info[:method])
         text += renderer.parameter_table(info[:params])
         text += examples(info)

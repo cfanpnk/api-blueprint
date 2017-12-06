@@ -42,8 +42,13 @@ class ApiBlueprint::Collect::Renderer
     "## Action: #{content}\n\n"
   end
 
-  def description_header
-    "### Description:\n\n"
+  def description_header(content=nil)
+    desc = content ? content['description'] : nil
+    o = "### Description:\n\n"
+    if desc
+      o << "\t#{desc}\n\n"
+    end
+    o
   end
 
   def signature(url, method)

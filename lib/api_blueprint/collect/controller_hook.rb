@@ -2,11 +2,16 @@ module ApiBlueprint::Collect::ControllerHook
   def self.included(base)
     return unless ENV['API_BLUEPRINT_DUMP'] == '1'
 
-    base.around_filter :dump_blueprint_around
+    if base.respond_to?(:around_action)
+      base.around_action :dump_blueprint_around
+    else
+      base.around_filter :dump_blueprint_around
+    end
+
   end
 
   class Parser
-    attr_reader :input
+    attr_reader :input, :headers
 
     def initialize(input)
       @input = input
@@ -27,7 +32,7 @@ module ApiBlueprint::Collect::ControllerHook
     end
 
     def headers
-      Hash[input.headers.env.select do |k, v|
+      @headers ||=  Hash[input.headers.env.select do |k, v|
         (k.start_with?("HTTP_X_") || k == 'ACCEPT') && v
       end.map do |k, v|
         [human_header_key(k), v]
@@ -79,7 +84,14 @@ module ApiBlueprint::Collect::ControllerHook
     in_parser  = Parser.new(request)
     out_parser = Parser.new(response)
 
+    api_blueprint_keys = %w(x_api_blueprint_description)
+    api_blueprint_headers = in_parser.headers.slice(*api_blueprint_keys)
+    api_blueprint_keys.each{|k| in_parser.headers.delete(k) }
+
     data = {
+      'metadata' => {
+        'description' => api_blueprint_headers['x_api_blueprint_description']
+      },
       'request' => {
         'path'         => request.path,
         'method'       => in_parser.method,
@@ -92,7 +104,7 @@ module ApiBlueprint::Collect::ControllerHook
         'status'       => response.status,
         'content_type' => response.content_type,
         'body'         => out_parser.body,
-        'headers'      => response.headers
+        'headers'      => response.headers.to_h
       },
       'route' => {
         'controller'   => controller_name,
