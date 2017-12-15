@@ -33,7 +33,7 @@ module ApiBlueprint::Collect::ControllerHook
 
     def headers
       @headers ||=  Hash[input.headers.env.select do |k, v|
-        (k.start_with?("HTTP_X_") || k == 'ACCEPT') && v
+        (k.start_with?("HTTP_X_") ||  k.start_with?("HTTP_") || k == 'ACCEPT') && v
       end.map do |k, v|
         [human_header_key(k), v]
       end]
