@@ -38,7 +38,7 @@ class ApiBlueprint::Collect::Preprocessor
   def preprocess(info)
     any_request = info[:requests].first
 
-    info[:path]   = any_request['request']['path'].sub(/\d+$/, '{id}')
+    info[:path]   = any_request['request']['path'].sub(/\/([\-0-9a-f]{36}|\d+$)/, '/{id}')
     info[:method] = any_request['request']['method']
     info[:params] = collect_request_params(info[:requests])
 
