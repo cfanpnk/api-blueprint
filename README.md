@@ -85,6 +85,8 @@ api:
   naming:
     sessions:
       create: "Sign In"
+  rspec_options:
+    tag: documentation
 ```
 
 Here's what specific per-documentation options stand for:
@@ -96,5 +98,6 @@ Option | Description
 `html` | Target HTML file created after compilation
 `deploy` | SSH address used for documentation deployment
 `naming` | Dictionary of custom API method names
+`rspec_options` | Dictionary of command line options to pass to rspec when generating docs (Allows targeting of specs based off tags)
 
 First group is always a default one. You can switch any rake task to work on other group by specifying its name with `rake blueprint:collect group=other`.
