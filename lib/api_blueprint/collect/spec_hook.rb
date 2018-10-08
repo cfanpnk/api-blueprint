@@ -1,4 +1,6 @@
 module ApiBlueprint::Collect::SpecHook
+  @@controller_name = nil
+  @@action_name = nil
   def self.included(base)
     return unless ENV['API_BLUEPRINT_DUMP'] == '1'
 
@@ -9,6 +11,7 @@ module ApiBlueprint::Collect::SpecHook
 
       File.write(ApiBlueprint::Collect::Storage.spec_dump, data.to_yaml)
     end
+
     base.after(:each) do |example|
       dump_blueprint
     end
@@ -111,8 +114,8 @@ module ApiBlueprint::Collect::SpecHook
         'headers'      => response.headers.to_h
       },
       'route' => {
-        'controller'   => 'stub_controller',
-        'action'       => 'stub_action'
+        'controller'   => @@controller_name,
+        'action'       => @@action_name
       }
     }
 
