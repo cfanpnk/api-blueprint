@@ -111,8 +111,8 @@ module ApiBlueprint::Collect::SpecHook
         'headers'      => response.headers.to_h
       },
       'route' => {
-        'controller'   => controller_name,
-        'action'       => action_name
+        'controller'   => 'stub_controller',
+        'action'       => 'stub_action'
       }
     }
 
