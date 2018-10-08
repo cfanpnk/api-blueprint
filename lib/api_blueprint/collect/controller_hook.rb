@@ -113,6 +113,7 @@ module ApiBlueprint::Collect::ControllerHook
     }
 
     spec = ApiBlueprint::Collect::Storage.spec_dump
+    p spec
     if File.exists?(spec)
       data['spec'] = YAML::load_file(spec)
     end
