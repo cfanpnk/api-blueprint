@@ -1,6 +1,25 @@
 module ApiBlueprint::Collect::SpecHook
   @@controller_name = nil
   @@action_name = nil
+
+  class << self
+    def controller_name=(name)
+      @@controller_name = name
+    end
+
+    def action_name=(name)
+      @@action_name = name
+    end
+
+    def controller_name
+      @@controller_name
+    end
+
+    def action_name
+      @@action_name
+    end
+  end
+
   def self.included(base)
     return unless ENV['API_BLUEPRINT_DUMP'] == '1'
 
@@ -97,7 +116,7 @@ module ApiBlueprint::Collect::SpecHook
 
     data = {
       'metadata' => {
-        'description' => api_blueprint_headers['x_api_blueprint_description']
+        'description' => request.headers['HTTP_X_API_BLUEPRINT_DESCRIPTION']
       },
       'request' => {
         'path'         => request.path,
