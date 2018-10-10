@@ -38,8 +38,13 @@ module ApiBlueprint::Collect::SpecHook
     end
 
     def set_param_description(param_name, description)
-      @base_example.metadata[:param_descriptions] ||= {}
-      @base_example.metadata[:param_descriptions][param_name] = description
+      @base_example.metadata[:param_definitions] ||= {}
+      @base_example.metadata[:param_definitions][param_name.to_s] = (@base_example.metadata[:param_definitions][param_name.to_s] || {}).merge({ description: description })
+    end
+
+    def set_param_definition(param_name, type, example_value, description)
+      @base_example.metadata[:param_definitions] ||= {}
+      @base_example.metadata[:param_definitions][param_name.to_s] = { type: type, example: example_value, description: description }
     end
 
     unless base.method_defined?(:set_description)
@@ -130,7 +135,7 @@ module ApiBlueprint::Collect::SpecHook
     data = {
       'metadata' => {
         'description' => example.metadata[:ex_description] || request.headers['HTTP_X_API_BLUEPRINT_DESCRIPTION'],
-        'param_descriptions'  => example.metadata[:param_descriptions]
+        'param_definitions'  => example.metadata[:param_definitions]
       },
       'request' => {
         'path'         => request.path,

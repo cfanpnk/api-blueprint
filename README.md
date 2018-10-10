@@ -109,6 +109,6 @@ First group is always a default one. You can switch any rake task to work on oth
       set_description 'Allows a user to "like" a piece of content specified by item_uuid and item_type'
       set_param_description(:item_uuid, 'uuid of the item a user is to rate')
       set_param_description(:item_type, 'type of item.  Currently only supports `episode`')
-      set_param_description(:rating, 'Score to rate the item.  Currently must be either 1 or -1')
+      set_param_definition(:rating, 'string', '1' 'Score to rate the item.  Currently must be either 1 or -1')
     end
 ```
