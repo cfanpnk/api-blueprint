@@ -21,19 +21,20 @@ module ApiBlueprint::Collect::SpecHook
   end
 
   def self.included(base)
-    return unless ENV['API_BLUEPRINT_DUMP'] == '1'
 
     base.before(:each) do |example|
-      data = {
-        'title_parts' => example_description_parts(example)
-      }
       @base_example = example
 
-      File.write(ApiBlueprint::Collect::Storage.spec_dump, data.to_yaml)
+      if ENV['API_BLUEPRINT_DUMP'] == '1'
+        data = {
+          'title_parts' => example_description_parts(example)
+        }
+        File.write(ApiBlueprint::Collect::Storage.spec_dump, data.to_yaml)
+      end
     end
 
     base.after(:each) do |example|
-      dump_blueprint(example)
+      dump_blueprint(example) if ENV['API_BLUEPRINT_DUMP'] == '1'
     end
 
     def set_param_description(param_name, description)
