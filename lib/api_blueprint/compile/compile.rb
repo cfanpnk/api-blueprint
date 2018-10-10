@@ -7,6 +7,7 @@ class ApiBlueprint::Compile::Compile
     @logger = options[:logger]
 
     @partials = []
+    @blueprint_options = blueprint_options.dig('layout_options')
   end
 
   def compile
@@ -16,6 +17,7 @@ class ApiBlueprint::Compile::Compile
 
     layout_html = layout.to_html
     insert_javascripts(layout_html)
+    write_title_tag(layout_html)
 
     layout_doc = load_document(layout_html)
     insert_title(layout_doc)
@@ -27,6 +29,17 @@ class ApiBlueprint::Compile::Compile
 
   private
 
+  def blueprint_options(opts = {})
+    file = Rails.root.join("Blueprintfile")
+
+    hash = {}
+    if File.exists?(file)
+      file = YAML.load_file(file)
+      hash = file.any? ? file.first[1] : {}
+    end
+    hash
+  end
+
   def load_layout
     log "Rendering '#{@source}' within the blueprint layout..."
 
@@ -35,6 +48,11 @@ class ApiBlueprint::Compile::Compile
 
   def load_document(html)
     Nokogiri::HTML(html)
+  end
+
+  def write_title_tag(html)
+    tag = html.at_css "title"
+    tag.content = @blueprint_options.dig('title')
   end
 
   def write_html(layout_html)
@@ -113,11 +131,10 @@ class ApiBlueprint::Compile::Compile
   end
 
   def insert_copyright(doc)
-    copyright_node = doc.at('p:contains("Copyright: ")')
+    copyright_node = doc.at('p.copyright')
 
     if copyright_node
-      copyright_text = copyright_node.text.strip.sub("Copyright: ", '')
-      copyright_text = "© #{Date.today.year} #{copyright_text}"
+      copyright_text = @layout_options.dig('layout_options')
       copyright_tag  = doc.at('.copyright')
 
       copyright_node['id'] = 'copyright'
