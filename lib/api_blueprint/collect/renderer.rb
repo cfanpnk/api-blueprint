@@ -11,7 +11,7 @@ class ApiBlueprint::Collect::Renderer
     params.each do |name, info|
       comment = ''
       comment = "Params for each #{name.singularize}:" if info[:type] == 'array'
-      comment = metadata[name.to_sym] if metadata&.has_key?(name.to_sym)
+      comment = param_descriptions[name.to_sym] if param_descriptions&.has_key?(name.to_sym)
 
       text += "#{'[]' * level} #{name} | *#{info[:type]}*#{info[:example].present? ? " `Example: #{info[:example]}`" : ''} | #{comment}\n"
 

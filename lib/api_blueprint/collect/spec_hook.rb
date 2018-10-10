@@ -27,17 +27,24 @@ module ApiBlueprint::Collect::SpecHook
       data = {
         'title_parts' => example_description_parts(example)
       }
+      @base_example = example
 
       File.write(ApiBlueprint::Collect::Storage.spec_dump, data.to_yaml)
     end
 
     base.after(:each) do |example|
-      dump_blueprint
+      dump_blueprint(example)
     end
 
-    def set_param_description(example, param_name, description)
-      example.metadata[:param_descriptions] ||= {}
-      example.metadata[:param_descriptions][param_name] = description
+    def set_param_description(param_name, description)
+      @base_example.metadata[:param_descriptions] ||= {}
+      @base_example.metadata[:param_descriptions][param_name] = description
+    end
+
+    unless base.method_defined?(:set_description)
+      def set_description(description)
+        @base_example.metadata[:ex_description] = "\n\n#{description}\n"
+      end
     end
   end
 
@@ -110,7 +117,7 @@ module ApiBlueprint::Collect::SpecHook
     dump_blueprint
   end
 
-  def dump_blueprint
+  def dump_blueprint(example)
     file       = ApiBlueprint::Collect::Storage.request_dump
     in_parser  = Parser.new(request)
     out_parser = Parser.new(response)
@@ -121,8 +128,8 @@ module ApiBlueprint::Collect::SpecHook
 
     data = {
       'metadata' => {
-        'description' => request.headers['HTTP_X_API_BLUEPRINT_DESCRIPTION'],
-        'param_desc'  => example.metadata[:param_descriptions]
+        'description' => example.metadata[:ex_description] || request.headers['HTTP_X_API_BLUEPRINT_DESCRIPTION'],
+        'param_descriptions'  => example.metadata[:param_descriptions]
       },
       'request' => {
         'path'         => request.path,
