@@ -1,5 +1,5 @@
 class ApiBlueprint::Collect::Renderer
-  def parameter_table(params, param_descriptions, level = 0)
+  def parameter_table(params, param_definitions, level = 0)
     text = ''
 
     if level == 0
@@ -8,15 +8,19 @@ class ApiBlueprint::Collect::Renderer
       text += "-----|------|---------|------------\n"
     end
 
-    params.each do |name, info|
+    params.deep_merge(param_definitions).each do |name, info|
       comment = ''
-      comment = "Params for each #{name.singularize}:" if info[:type] == 'array'
-      comment = param_descriptions[name.to_sym] if param_descriptions&.has_key?(name.to_sym)
+      if info[:type] == 'array'
+        comment = "Params for each #{name.singularize}:"
+      else
+        comment = info[:description] || ''
+      end
+
 
       text += "#{'[]' * level} #{name} | *#{info[:type]}*#{info[:example].present? ? " `Example: #{info[:example]}`" : ''} | #{comment}\n"
 
       if info[:type] == 'nested' || info[:type] == 'array'
-        text += parameter_table(info[:params], param_descriptions, level + 1)
+        text += parameter_table(info[:params], param_definitions, level + 1)
       end
     end
     text += "\n" if level == 0
