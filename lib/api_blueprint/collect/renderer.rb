@@ -1,5 +1,5 @@
 class ApiBlueprint::Collect::Renderer
-  def parameter_table(params, level = 0)
+  def parameter_table(params, param_descriptions, level = 0)
     text = ''
 
     if level == 0
@@ -11,11 +11,12 @@ class ApiBlueprint::Collect::Renderer
     params.each do |name, info|
       comment = ''
       comment = "Params for each #{name.singularize}:" if info[:type] == 'array'
+      comment = metadata[name.to_sym] if metadata&.has_key?(name.to_sym)
 
       text += "#{'[]' * level} #{name} | *#{info[:type]}*#{info[:example].present? ? " `Example: #{info[:example]}`" : ''} | #{comment}\n"
 
       if info[:type] == 'nested' || info[:type] == 'array'
-        text += parameter_table(info[:params], level + 1)
+        text += parameter_table(info[:params], param_descriptions, level + 1)
       end
     end
     text += "\n" if level == 0

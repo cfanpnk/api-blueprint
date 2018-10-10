@@ -107,7 +107,7 @@ class ApiBlueprint::Collect::Merge
 
         text += renderer.description_header(info[:metadata])
         text += renderer.signature(info[:path], info[:method])
-        text += renderer.parameter_table(info[:params])
+        text += renderer.parameter_table(info[:params], info[:metadata]['param_descriptions'])
         text += examples(info)
       end.join
     end.join

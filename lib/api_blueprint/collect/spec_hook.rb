@@ -34,6 +34,11 @@ module ApiBlueprint::Collect::SpecHook
     base.after(:each) do |example|
       dump_blueprint
     end
+
+    def set_param_description(example, param_name, description)
+      example.metadata[:param_descriptions] ||= {}
+      example.metadata[:param_descriptions][param_name] = description
+    end
   end
 
   class Parser
@@ -116,7 +121,8 @@ module ApiBlueprint::Collect::SpecHook
 
     data = {
       'metadata' => {
-        'description' => request.headers['HTTP_X_API_BLUEPRINT_DESCRIPTION']
+        'description' => request.headers['HTTP_X_API_BLUEPRINT_DESCRIPTION'],
+        'param_desc'  => example.metadata[:param_descriptions]
       },
       'request' => {
         'path'         => request.path,
