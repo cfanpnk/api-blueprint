@@ -17,9 +17,9 @@ class ApiBlueprint::Compile::Compile
 
     layout_html = layout.to_html
     insert_javascripts(layout_html)
-    write_title_tag(layout_html)
 
     layout_doc = load_document(layout_html)
+    write_title_tag(layout_doc)
     insert_title(layout_doc)
     insert_host(layout_doc)
     insert_copyright(layout_doc)
