@@ -84,14 +84,12 @@ class ApiBlueprint::Collect::Merge
         end
       end
 
-      resources = resources.sort
-
       resources
     end
   end
 
   def requests
-    ApiBlueprint::Collect::Storage.request_dumps.collect do |file|
+    ApiBlueprint::Collect::Storage.request_dumps.sort.collect do |file|
       YAML::load_file(file)
     end.uniq
   end
@@ -107,7 +105,7 @@ class ApiBlueprint::Collect::Merge
 
         text += renderer.description_header(info[:metadata])
         text += renderer.signature(info[:path], info[:method])
-        text += renderer.parameter_table(info[:params], info[:metadata]['param_definitions'])
+        text += renderer.parameter_table(info[:params], info[:metadata]['param_descriptions'])
         text += examples(info)
       end.join
     end.join
