@@ -134,7 +134,7 @@ class ApiBlueprint::Compile::Compile
     copyright_node = doc.at('p.copyright')
 
     if copyright_node
-      copyright_text = @layout_options.dig('layout_options')
+      copyright_text = @blueprint_options.dig('layout_options')
       copyright_tag  = doc.at('.copyright')
 
       copyright_node['id'] = 'copyright'
