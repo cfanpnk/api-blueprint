@@ -8,7 +8,7 @@ class ApiBlueprint::Collect::Renderer
       text += "-----|------|---------|------------\n"
     end
 
-    params.deep_merge(param_definitions).each do |name, info|
+    params.deep_merge(param_definitions&.select{ |k,v| v.is_a?(Hash) && v.has_key?(:description)} || {}).each do |name, info|
       comment = ''
       if info[:type] == 'array'
         comment = "Params for each #{name.singularize}:"
@@ -20,7 +20,7 @@ class ApiBlueprint::Collect::Renderer
       text += "#{'[]' * level} #{name} | *#{info[:type]}*#{info[:example].present? ? " `Example: #{info[:example]}`" : ''} | #{comment}\n"
 
       if info[:type] == 'nested' || info[:type] == 'array'
-        text += parameter_table(info[:params], param_definitions, level + 1)
+        text += parameter_table(info[:params], param_definitions&.dig(name), level + 1)
       end
     end
     text += "\n" if level == 0
