@@ -39,12 +39,30 @@ module ApiBlueprint::Collect::SpecHook
 
     def set_param_description(param_name, description)
       @base_example.metadata[:param_definitions] ||= {}
-      @base_example.metadata[:param_definitions][param_name.to_s] = (@base_example.metadata[:param_definitions][param_name.to_s] || {}).merge({ description: description })
+      if param_name.is_a? Array
+        tmp = @base_example.metadata[:param_definitions]
+        param_name.each do |param|
+          tmp[param.to_s] ||= {}
+          tmp = tmp[param.to_s]
+        end
+        tmp.merge!({ description: description })
+      else
+        @base_example.metadata[:param_definitions][param_name.to_s] = (@base_example.metadata[:param_definitions][param_name.to_s] || {}).merge({ description: description })
+      end
     end
 
     def set_param_definition(param_name, type, example_value, description)
       @base_example.metadata[:param_definitions] ||= {}
-      @base_example.metadata[:param_definitions][param_name.to_s] = { type: type, example: example_value, description: description }
+      if param_name.is_a? Array
+        tmp = @base_example.metadata[:param_definitions]
+        param_name.each do |param|
+          tmp[param.to_s] ||= {}
+          tmp = tmp[param.to_s]
+        end
+        tmp.merge!({ type: type, example: example_value, description: description })
+      else
+        @base_example.metadata[:param_definitions][param_name.to_s] = (@base_example.metadata[:param_definitions][param_name.to_s] || {}).merge({ type: type, example: example_value, description: description })
+      end
     end
 
     unless base.method_defined?(:set_description)

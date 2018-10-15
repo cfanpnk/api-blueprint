@@ -110,5 +110,9 @@ First group is always a default one. You can switch any rake task to work on oth
       set_param_description(:item_uuid, 'uuid of the item a user is to rate')
       set_param_description(:item_type, 'type of item.  Currently only supports `episode`')
       set_param_definition(:rating, 'string', '1' 'Score to rate the item.  Currently must be either 1 or -1')
+
+      # For nested params, pass an array corresponding to the keys
+      set_param_description([:comment, :message], 'Content of the comment the user is leaving.')
+      set_param_definition([:comment, :topic_uuid], 'string', SecureRandom.uuid, 'uuid of the item a user is commenting on')
     end
 ```
