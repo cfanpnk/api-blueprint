@@ -45,7 +45,7 @@ module ApiBlueprint::Collect::SpecHook
           tmp[param.to_s] ||= {}
           tmp = tmp[param.to_s]
         end
-        tmp = tmp.merge({ description: description })
+        tmp.merge!({ description: description })
       else
         @base_example.metadata[:param_definitions][param_name.to_s] = (@base_example.metadata[:param_definitions][param_name.to_s] || {}).merge({ description: description })
       end
@@ -59,7 +59,7 @@ module ApiBlueprint::Collect::SpecHook
           tmp[param.to_s] ||= {}
           tmp = tmp[param.to_s]
         end
-        tmp = tmp.merge({ type: type, example: example_value, description: description })
+        tmp.merge!({ type: type, example: example_value, description: description })
       else
         @base_example.metadata[:param_definitions][param_name.to_s] = (@base_example.metadata[:param_definitions][param_name.to_s] || {}).merge({ type: type, example: example_value, description: description })
       end
