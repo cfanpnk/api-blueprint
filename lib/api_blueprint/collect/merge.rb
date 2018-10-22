@@ -84,7 +84,7 @@ class ApiBlueprint::Collect::Merge
         end
       end
 
-      # resources = resources.sort
+      resources = resources.sort
 
       resources
     end
