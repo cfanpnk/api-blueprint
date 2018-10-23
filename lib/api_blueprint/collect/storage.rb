@@ -1,6 +1,6 @@
 module ApiBlueprint::Collect::Storage
   def self.request_dumps
-    Dir[Rails.root.join('tmp', 'api_blueprint_request_*.yml').to_s]
+    Dir[Rails.root.join('tmp', 'api_blueprint_request_*.yml').to_s].sort
   end
 
   def self.spec_dump
