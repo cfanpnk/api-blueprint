@@ -108,11 +108,6 @@ class ApiBlueprint::Collect::Preprocessor
         elsif value.is_a?(ActionDispatch::Http::UploadedFile)
           type = 'file'
           value = value.original_filename
-        elsif value.to_i.to_s == value
-          type = 'integer'
-        elsif value.to_f.to_s == value
-          type = 'decimal'
-          value = value.to_f.round(6).to_s
         else
           type = 'string'
         end
