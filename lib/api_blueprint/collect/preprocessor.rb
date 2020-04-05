@@ -101,6 +101,8 @@ class ApiBlueprint::Collect::Preprocessor
             :params => value
           }
         end
+      elsif param == 'format'
+        # ignore this
       else
         if value == true || value == false
           type = 'boolean'
